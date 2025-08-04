@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publicaciones-service
+  namespace: microservicios
+  labels:
+    app: publicaciones-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: publicaciones-service
+  template:
+    metadata:
+      labels:
+        app: publicaciones-service
+    spec:
+      containers:
+      - name: publicaciones-service
+        image: ms-publicaciones:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: "SERVICIO-PUBLICACIONES"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgresql-svc:5432/db_publicaciones"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "postgres"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "postgres123"
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: "org.postgresql.Driver"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+          value: "org.hibernate.dialect.PostgreSQLDialect"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_SHOW_SQL
+          value: "true"
+        - name: SPRING_RABBITMQ_HOST
+          value: "rabbitmq-svc"
+        - name: SPRING_RABBITMQ_PORT
+          value: "5672"
+        - name: SPRING_RABBITMQ_USERNAME
+          value: "guest"
+        - name: SPRING_RABBITMQ_PASSWORD
+          value: "guest"
+        - name: EUREKA_CLIENT_REGISTER_WITH_EUREKA
+          value: "true"
+        - name: EUREKA_CLIENT_FETCH_REGISTRY
+          value: "true"
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+          value: "http://eureka-server-svc:8761/eureka/"
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        - name: SERVER_PORT
+          value: "8080"
+        - name: FEIGN_CLIENT_CONFIG_AUTH_SERVICE_CONNECTTIMEOUT
+          value: "5000"
+        - name: FEIGN_CLIENT_CONFIG_AUTH_SERVICE_READTIMEOUT
+          value: "5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: publicaciones-svc
+  namespace: microservicios
+spec:
+  selector:
+    app: publicaciones-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP

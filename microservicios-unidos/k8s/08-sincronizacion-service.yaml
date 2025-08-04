@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sincronizacion-service
+  namespace: microservicios
+  labels:
+    app: sincronizacion-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sincronizacion-service
+  template:
+    metadata:
+      labels:
+        app: sincronizacion-service
+    spec:
+      containers:
+      - name: sincronizacion-service
+        image: sincronizacion:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_RABBITMQ_HOST
+          value: "rabbitmq-svc"
+        - name: SPRING_RABBITMQ_PORT
+          value: "5672"
+        - name: SPRING_RABBITMQ_USERNAME
+          value: "guest"
+        - name: SPRING_RABBITMQ_PASSWORD
+          value: "guest"
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+          value: "http://eureka-server-svc:8761/eureka/"
+        - name: PORT
+          value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sincronizacion-svc
+  namespace: microservicios
+spec:
+  selector:
+    app: sincronizacion-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP

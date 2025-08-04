@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notificaciones-service
+  namespace: microservicios
+  labels:
+    app: notificaciones-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notificaciones-service
+  template:
+    metadata:
+      labels:
+        app: notificaciones-service
+    spec:
+      containers:
+      - name: notificaciones-service
+        image: ms-notificaciones:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8086
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: "SERVICIO-NOTIFICACIONES"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgresql-svc:5432/db_notificaciones"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "postgres"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "postgres123"
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: "org.postgresql.Driver"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+          value: "org.hibernate.dialect.PostgreSQLDialect"
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_SHOW_SQL
+          value: "true"
+        - name: SPRING_RABBITMQ_HOST
+          value: "rabbitmq-svc"
+        - name: SPRING_RABBITMQ_PORT
+          value: "5672"
+        - name: SPRING_RABBITMQ_USERNAME
+          value: "guest"
+        - name: SPRING_RABBITMQ_PASSWORD
+          value: "guest"
+        - name: SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE
+          value: "auto"
+        - name: SPRING_RABBITMQ_LISTENER_SIMPLE_RETRY_ENABLED
+          value: "true"
+        - name: EUREKA_CLIENT_REGISTER_WITH_EUREKA
+          value: "true"
+        - name: EUREKA_CLIENT_FETCH_REGISTRY
+          value: "true"
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+          value: "http://eureka-server-svc:8761/eureka/"
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        - name: SERVER_PORT
+          value: "8086"
+        - name: RELOJ_INTERVALO
+          value: "10"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notificaciones-svc
+  namespace: microservicios
+spec:
+  selector:
+    app: notificaciones-service
+  ports:
+  - port: 8086
+    targetPort: 8086
+  type: ClusterIP

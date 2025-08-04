@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: SERVICIO-PUBLICACIONES  # ← CAMBIAR A ESTE NOMBRE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db-publicaciones
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+# Configuración de Feign para logs y timeouts
+feign:
+  client:
+    config:
+      AUTH-SERVICE:  # ← Configuración específica para AuthService
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: BASIC
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

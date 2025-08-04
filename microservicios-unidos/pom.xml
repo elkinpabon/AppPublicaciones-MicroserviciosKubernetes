@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.1</version> <!-- ✅ Versión compatible con Spring Cloud 2023.0.1 -->
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <groupId>ec.edu.espe</groupId>
+  <artifactId>microservicios-unidos</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>microservicios-unidos</name>
+  <description>Uniendo del todo el proyecto</description>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>ms-publicaciones</module>
+    <module>ms_notificaciones</module>
+    <module>sincronizacion</module>
+    <module>ms-catalogo</module>
+    <module>ms-eureka-server</module>
+    <module>ms-api-gateway</module>
+    <module>authservice</module>
+  </modules>
+
+</project>
